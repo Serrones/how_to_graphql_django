@@ -40,6 +40,7 @@ class CreateLink(graphene.Mutation):
             id=link.id,
             url=link.url,
             description=link.description,
+            posted_by=link.posted_by
         )
 
 
@@ -63,10 +64,12 @@ class CreateVote(graphene.Mutation):
 
     def mutate(self, info, link_id):
         user = info.context.user
+        # First error handling
         if user.is_anonymous:
             raise Exception('You must be logged to vote!')
 
         link = Link.objects.filter(id=link_id).first()
+        # Second error handling
         if not link:
             raise Exception('Invalid Link!')
 
